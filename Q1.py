@@ -2,7 +2,7 @@ from pathlib import Path
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from load_data import load_data
+from modules import load_data, save_fig
 
 X, times = load_data()
 
@@ -42,7 +42,7 @@ cbar = plt.colorbar(heatmap, ax=ax1)
 cbar.set_label('Average Firing Rate (Hz)')
 
 # Save the first plot to an image file
-# fig1.savefig(Path.cwd() / 'plots' / f'Q1_50_neurons_second_cond_{timestamp}')
+# save_fig(fig1, 'Q1_50_neurons_second_cond')
 
 # Create second figure and axis
 fig2, ax2 = plt.subplots(figsize=(8, 6))
@@ -61,8 +61,7 @@ ax2.set_xlim(times[0] - 20, times[-1] + 20)
 ax2.set_xticks(times[::20])
 ax2.set_xticklabels(times[::20])
 
-# fig2.savefig(Path.cwd() / 'plots' /
-#             f'Q1_neuron_#{i+1}_in_cond_#{c+1}_{timestamp}')
+# save_fig(fig2, f'Q1_neuron_#{i+1}_in_cond_#{c+1}')
 
 
 # Task: Plot the population average firing rate as a function of time,
@@ -83,8 +82,7 @@ ax3.set_xticklabels(times[::20])
 ax3.set_xlabel('Time (ms)')
 ax3.set_ylabel('Average firing rate (Hz)')
 
-# fig3.savefig(Path.cwd() / 'plots' /
-#             f'Q1_avg_FR_across_neurons_and_conds_{timestamp}')
+# save_fig(fig3, 'Q1_avg_FR_across_neurons_and_conds')
 
 # Show the plot
 plt.show()

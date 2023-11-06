@@ -1,4 +1,6 @@
-"""Module providing a function to load a .npz file."""
+"""Module providing a function to load a .npz file and to plot a figure."""
+from pathlib import Path
+import datetime
 from numpy import load
 
 
@@ -22,4 +24,21 @@ def load_data(filename='psths.npz'):
     """
 
     data = load(filename)
-    return data['X'], data['times']
+    X = data['X']
+    times = data['times']
+    times = times.reshape(len(times), 1)
+    return X, times
+
+
+def save_fig(fig, filename):
+    """Save a figure with a timestamp at end as ID."""
+
+    if filename is None:
+        raise ValueError('Filename cannot be None.')
+
+    # Generate a timestamp to make a unique filename
+    timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+
+    fig.savefig(Path.cwd() / 'plots' / f'{filename}_{timestamp}')
+
+    return None

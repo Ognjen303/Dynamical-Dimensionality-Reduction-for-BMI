@@ -34,6 +34,9 @@ ax2.set_title(
 # save_fig(fig2, filename='Q2_Histogram_of_max_FR_of_each_neuron')
 
 
+plt.show()
+
+
 def normalise(X):
     """
     Separately for each neuron normalize its PSTH according to:
@@ -75,15 +78,53 @@ X = mean_centering(normalise(X))
 # Create a boolean mask to select values within the specified range
 # mask shape is (130, 1)
 mask = (times >= -150) & (times <= 300)
-mask = mask[:, 0] # mask shape is now (130,)
+mask = mask[:, 0]  # mask shape is now (130,)
 
 times = times[mask]
 times = times[..., np.newaxis]
 
-X = X[:, :, mask] # shape of X is now (N, C, 46)
-X = X.reshape(X.shape[0], -1)
-print(X.shape)
+# number of time bins is now 46
+T = times.shape[0]
 
 
+X = X[:, :, mask]  # shape of X is now (N, C, 46)
+X = X.reshape(X.shape[0], -1)  # shape of X is now (N, Cx46)
 
-# plt.show()
+
+# PCA
+
+def pca_proj_matrix(X, M=12):
+    """
+    Find the eigenvectors and eigenvalues of S_hat = 1/T * X @ X.T
+    and take the top M=12 principle components in the neuron activity space.
+
+    input:
+    X -> matrix of shape (N x CT) (T should be 46)
+    M -> # Number of principal components to select
+
+    output:
+    V_M -> matrix of shape (N x M)
+    """
+
+    S_hat = 1/T * X @ X.T
+    _, evecs = np.linalg.eig(S_hat)
+
+    # Select the top M eigenvectors
+    V_M = evecs[:, :M]
+
+    return V_M
+
+
+def pca_dim_reduction(X, M=12):
+    """
+    Projecting onto the first M = 12 principle
+    components in the neuron activity space.
+    Denote the resulting M × CT = 12 × 4968 array by Z,
+    and its components by Z[i, n].
+    """
+
+    V_M = pca_proj_matrix(X, M)
+    Z = V_M.T @ X
+    del V_M
+
+    return Z

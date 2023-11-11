@@ -4,7 +4,7 @@ import datetime
 from numpy import load
 
 
-def load_data(filename='psths.npz'):
+def load_data(filename='./data/psths.npz'):
     """Function returns:
 
     a 3D Numpy array, X, with shape N × C × T, 
@@ -24,10 +24,19 @@ def load_data(filename='psths.npz'):
     """
 
     data = load(filename)
-    X = data['X']
-    times = data['times']
+    X, times = data['X'], data['times']
     times = times.reshape(len(times), 1)
     return X, times
+
+
+def load_test_data(filename='./data/test.npz'):
+    """
+    Returns Z_test 3D array of shape M x C x T and
+            A_test 2D array of shape K x K, where K = M(M-1)/2.
+    """
+
+    data = load(filename)
+    return data['Z_test'], data['A_test']
 
 
 def save_fig(fig, filename):

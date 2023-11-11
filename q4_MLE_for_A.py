@@ -27,11 +27,11 @@ Z = Z.reshape(M, -1, T)
 # Take difference along time axis. The t+1-th column of dZ
 # denoted as dz_{t+1} in the report is dz_{t+1} = z_{t+1} - z_t:
 dZ = Z[:, :, 1:] - Z[:, :, :-1]  # shape is (M x C x (T-1))
-print(f'{dZ.shape=}')
+# print(f'{dZ.shape=}')
 
 # Redefine Z by discarding the first column
 Z = Z[:, :, 1:]  # shape is (M x C x (T-1))
-print(f'{Z.shape=}')
+# print(f'{Z.shape=}')
 
 # Log-likelihood, log p(Z | sigma=1, A)
 # ll = - 0.5 * Z.T @ A.T @ A @ Z + dZ.T @ A @ Z + const
@@ -147,11 +147,11 @@ def reconstruct_A(beta, H):
     return np.squeeze(A, axis=0)
 
 
-print(f'{M=}')
+# print(f'{M=}')
 H = construct_H(M)
 
 
-# ---------------- Q4(b) Gradient w.r.t. beta ----------------
+# ---------------- Q4(c) Gradient w.r.t. beta ----------------
 
 
 # Now that we can represent out A matrix using beta
@@ -179,7 +179,7 @@ def construct_W(H, Z):
 
 
 W = construct_W(H, Z)
-print(f'{W.shape=}')
+# print(f'{W.shape=}')
 
 # Log-likelihood log p(Z | sigma=1, beta) is:
 # ll = -0.5 * [np.tensordot(beta, W, axes=1).T @ np.tensordot(beta, W, axes=1)
@@ -188,20 +188,46 @@ print(f'{W.shape=}')
 # gradient of ll w.r.t. beta is:
 # dll = -beta @ np.tensordot()
 
-Q = np.tensordot(W, W, axes=([1, 2], [1, 2]))
 
-print(f'{Q.shape=}')
+def construct_Q(W):
+    """
+    Parameter:
+    W -> 3D array of shape K x M x C(T-1)
+
+    Returns:
+    Q -> 2D array of shape K x K. We get Q by contracting W with
+         itself along 1 and 2 axis.
+    """
+    return np.tensordot(W, W, axes=([1, 2], [1, 2]))
 
 
-# Reshape dZ
-dZ = dZ.reshape(M, -1)  # shape is MxC(T-1)
-print(f'{dZ.shape=}')
+Q = construct_Q(W)
+# print(f'{Q.shape=}')
 
 
-# Compute the row vector b
-b = np.tensordot(dZ, W, axes=([0, 1], [1, 2]))
-b = b.reshape((1, 66))
-print(f'{b.shape=}')
+def construct_b(dZ, W):
+    """
+    Parameter:
+    dZ -> 3D array of shape M x C x (T-1)
+    W ->  3D array of shape K x M x C(T-1)
+
+    Returns:
+    b -> Row vector of shape 1 x K. It is calculated by contracting
+         reshaped version of dZ and W.
+    """
+
+    # Reshape dZ
+    dZ = dZ.reshape(M, -1)  # shape is MxC(T-1)
+    # print(f'{dZ.shape=}')
+
+    # Compute the row vector b
+    b = np.tensordot(dZ, W, axes=([0, 1], [1, 2]))
+    b = b.reshape((1, 66))
+    # print(f'{b.shape=}')
+    return b
+
+
+b = construct_b(dZ, W)
 
 # The gradient of Log-likelihood w.r.t beta is:
 # b - beta @ Q
@@ -210,26 +236,44 @@ print(f'{b.shape=}')
 # ---------(d) Maximum Likelihood Estimate for antisymetric A ---------
 
 
-# Set b - beta @ Q = 0. Hence
+def MLE_A(b, Q):
+    """Performs Maximum Likelihood Estimate of antisymmetric matrix A."""
 
-print(f'{Q.T.shape=}')
-print(f'{b.T.shape=}')
-beta_transpose = np.linalg.solve(Q.T, b.T)
+    # For MLE set grad of ll w.r.t.b equal to 0, which gives:
+    # b - beta @ Q = 0. Hence
 
-beta = beta_transpose.T
+    # print(f'{Q.T.shape=}')
+    # print(f'{b.T.shape=}')
+    beta_transpose = np.linalg.solve(Q.T, b.T)
 
-print(f'{beta.shape=}')
+    beta = beta_transpose.T
 
-A = reconstruct_A(beta, H)
+    # print(f'{beta.shape=}')
 
-print(f'{A.shape=}')
-print(f'{A=}')
+    A = reconstruct_A(beta, H)
 
-fig, ax = plt.subplots(figsize=(10, 8))
-pos = ax.imshow(A, cmap='Blues', interpolation='none')
-fig.colorbar(pos, ax=ax)
-ax.set_title(f'Antisymmetric matrix A of shape {A.shape}')
+    # print(f'{A.shape=}')
+    # print(f'{A=}')
 
-# save_fig(fig, 'Q4d_Colour_plot_A')
+    return A
 
-plt.show()
+
+A = MLE_A(b, Q)
+
+
+def plot_A_matrix(A, test=False):
+
+    # Plot entries of anitysymmetric matrix A
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+    pos = ax.imshow(A, cmap='Blues', interpolation='none')
+    fig.colorbar(pos, ax=ax)
+
+    # if test:  # If we passed the actual solution matrix A
+    #     ax.set_title('Antisymmetric matrix A_test')
+    #     save_fig(fig, 'Q4e_A_test_colour_plot')
+    # else:
+    #     ax.set_title(f'MLE of antisymmetric matrix A')
+    #     save_fig(fig, 'Q4e_A_colour_plot')
+
+    plt.show()

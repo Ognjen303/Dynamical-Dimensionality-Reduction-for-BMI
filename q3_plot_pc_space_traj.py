@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cond_color
 from modules import load_data, save_fig
-from q2_preprocessingpreprocessing import limit_psth, pca_dim_reduction
+from q2_preprocessing import limit_psth, pca_dim_reduction
 
 # Load data
 X, times = load_data()

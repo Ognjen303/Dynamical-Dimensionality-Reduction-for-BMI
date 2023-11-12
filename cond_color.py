@@ -51,10 +51,10 @@ def plot_start(xs, ys, colors, markersize=500, ax=None):
     """
     if ax is None:
         plt.scatter(xs, ys, s=markersize, color=colors,
-                    marker=".", edgecolors="k")
+                    marker=".", edgecolors="k", label='start')
     else:
         ax.scatter(xs, ys, s=markersize, color=colors,
-                   marker=".", edgecolors="k")
+                   marker=".", edgecolors="k", label='start')
 
 
 def plot_end(xs, ys, colors, markersize=100, ax=None):
@@ -68,7 +68,7 @@ def plot_end(xs, ys, colors, markersize=100, ax=None):
     """
     if ax is None:
         plt.scatter(xs, ys, s=markersize, color=colors,
-                    marker="D", edgecolors="k")
+                    marker="D", edgecolors="k", label='end')
     else:
         ax.scatter(xs, ys, s=markersize, color=colors,
-                   marker="D", edgecolors="k")
+                   marker="D", edgecolors="k", label='end')

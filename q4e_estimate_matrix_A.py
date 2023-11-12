@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from modules import load_data, load_test_data
 from q2_preprocessing import limit_psth, pca_dim_reduction
-from q4_MLE_for_A import construct_H, reconstruct_A, construct_W, \
-    construct_Q, construct_b, MLE_A, plot_A_matrix
+from q4_MLE_for_A import *
 
 
 def estimate_A(Z):
@@ -27,8 +26,8 @@ def estimate_A(Z):
     # denoted as dz_{t+1} in the report is dz_{t+1} = z_{t+1} - z_t:
     dZ = Z[:, :, 1:] - Z[:, :, :-1]  # shape is (M x C x (T-1))
 
-    # Redefine Z by discarding the first column
-    Z = Z[:, :, 1:]  # shape is (M x C x (T-1))
+    # Redefine Z by discarding the last column
+    Z = Z[:, :, :-1]  # shape is (M x C x (T-1))
 
     # H is 3D array which linearly relates row vector beta and A
     H = construct_H(M)
@@ -68,7 +67,9 @@ A_my_est = estimate_A(Z_test)
 # plot_A_matrix(A_my_est, test=False)
 
 print(f'{A_test=}')  # stvarno resenje
-print(f'{A_my_est=}') # moje resenje
+print(f'{A_my_est=}')  # moje resenje
 
 print(f'Are the two matricies identical? Ans: \
-      {np.allclose(A_my_est, A_test, atol=1e-4)}')
+      {np.allclose(A_my_est, A_test, atol=1e-8, rtol=1e-3)}')
+
+print(f'Max abs difference is: {np.max(np.abs(A_my_est - A_test))}')

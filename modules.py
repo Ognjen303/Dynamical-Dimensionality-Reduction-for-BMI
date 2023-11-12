@@ -33,6 +33,9 @@ def load_test_data(filename='./data/test.npz'):
     """
     Returns Z_test 3D array of shape M x C x T and
             A_test 2D array of shape K x K, where K = M(M-1)/2.
+
+            NOTE: A_test CORRESPONDS TO A COMPLETELY DIFFERENT
+                  DATASET WHICH HAS NO CONNECTION TO REAL DATASET A  
     """
 
     data = load(filename)

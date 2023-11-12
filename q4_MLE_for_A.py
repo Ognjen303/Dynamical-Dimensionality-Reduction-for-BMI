@@ -29,8 +29,8 @@ Z = Z.reshape(M, -1, T)
 dZ = Z[:, :, 1:] - Z[:, :, :-1]  # shape is (M x C x (T-1))
 # print(f'{dZ.shape=}')
 
-# Redefine Z by discarding the first column
-Z = Z[:, :, 1:]  # shape is (M x C x (T-1))
+# Redefine Z by discarding the last column
+Z = Z[:, :, :-1]  # shape is (M x C x (T-1))
 # print(f'{Z.shape=}')
 
 # Log-likelihood, log p(Z | sigma=1, A)

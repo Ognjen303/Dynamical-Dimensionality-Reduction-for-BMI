@@ -269,11 +269,12 @@ def plot_A_matrix(A, test=False):
     pos = ax.imshow(A, cmap='Blues', interpolation='none')
     fig.colorbar(pos, ax=ax)
 
-    # if test:  # If we passed the actual solution matrix A
-    #     ax.set_title('Antisymmetric matrix A_test')
-    #     save_fig(fig, 'Q4e_A_test_colour_plot')
-    # else:
-    #     ax.set_title(f'MLE of antisymmetric matrix A')
-    #     save_fig(fig, 'Q4e_A_colour_plot')
+    if test:  # If we passed the actual solution matrix A
+        pass
+        #     ax.set_title('Antisymmetric matrix A_test')
+        #     save_fig(fig, 'Q4e_A_test_colour_plot')
+    else:
+        ax.set_title(f'Maximum Likelihood Estimate of antisymmetric matrix A')
+    #    save_fig(fig, 'Q4e_A_colour_plot')
 
     plt.show()

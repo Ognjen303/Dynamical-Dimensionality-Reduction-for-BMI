@@ -15,7 +15,7 @@ X, times, T = limit_psth(X, times)
 Z = pca_dim_reduction(X)
 
 
-def plot_pc1_pc2_plane(Z, savefig=True, T=46):
+def plot_pc1_pc2_plane(Z, plt_title=None, savefig=True, T=46, **kwargs):
     """
     Plot of trajectories in the PC1-PC2 plane (corresponding
     to 0 and 1 left-indices of Z, which for plotting you would
@@ -24,9 +24,20 @@ def plot_pc1_pc2_plane(Z, savefig=True, T=46):
 
     Input:
     Z -> shape (M x CT)
+    savefig (boolean) -> True if you want to save the plot
+    T (int) -> Number of timebins used in the last dimension of Z
+    Q (int) -> Indicates which question we are solving.
+               Q can take values 3 or 5.
     """
 
-    print(Z.shape)
+    Q = kwargs.get('Q', None)
+
+    if not isinstance(plt_title, str):
+        raise ValueError('Plot title must be a string')
+
+    if not (Q == 3 or Q == 5):
+        raise ValueError(
+            'You can plot only in questions 3 or 5. Please indicate which.')
 
     # Extract the principle components
     pc1, pc2 = Z[0, :], Z[1, :]
@@ -59,22 +70,27 @@ def plot_pc1_pc2_plane(Z, savefig=True, T=46):
     # Add legend
     ax.legend()
 
-    # Add axis labels and title for Q3
-    # ax.set_xlabel('1st Principle Component')
-    # ax.set_ylabel('2nd Principle Component')
-    # ax.set_title('Plot of neural activity trajectories in the PC1-PC2 plane')
+    if Q == 3 or Q is None:  # We are solving Q3
+        # Add axis labels and title for Q3
+        ax.set_xlabel('1st Principle Component')
+        ax.set_ylabel('2nd Principle Component')
+        ax.set_title(plt_title)
 
-    ax.set_xlabel('1st Eigenvector of P_FR')
-    ax.set_ylabel('2nd Eigenvector of P_FR')
-    ax.set_title(
-        'Trajectories in fastest rotation plane P_FR in time range [-150ms, 200ms]')
+    elif Q == 5:
+        # Add axis labels and title for Q5
+        ax.set_xlabel('$1^{st}$ row of P matrix')
+        ax.set_ylabel('$2^{nd}$ row of P matrix')
+        ax.set_title(plt_title)
 
     # Save the figure
     if savefig:
-        # save_fig(fig, 'Q3_Trajectories_in_PC1_PC2_plane')
-        save_fig(fig, 'Q5_P_FR_Trajectories')
+        if Q == 3:
+            save_fig(fig, 'Q3_Trajectories_in_PC1_PC2_plane')
+        elif Q == 5:
+            save_fig(fig, 'Q5_P_FR_Trajectories_3rd_fastest')
 
     plt.show()
 
 
-# plot_pc1_pc2_plane(Z, savefig=True)
+plt_title = 'Plot of neural activity trajectories in the PC1-PC2 plane'
+# plot_pc1_pc2_plane(Z, plt_title, savefig=False, Q=3)

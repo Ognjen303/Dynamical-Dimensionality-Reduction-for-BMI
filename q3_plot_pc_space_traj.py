@@ -93,4 +93,5 @@ def plot_pc1_pc2_plane(Z, plt_title=None, savefig=True, T=46, **kwargs):
 
 
 plt_title = 'Plot of neural activity trajectories in the PC1-PC2 plane'
+
 # plot_pc1_pc2_plane(Z, plt_title, savefig=False, Q=3)

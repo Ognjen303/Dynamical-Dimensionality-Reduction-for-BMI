@@ -10,7 +10,7 @@ from q4e_estimate_matrix_A import estimate_A
 X, times = load_data()
 
 # Limit the PSTH to time interval between -150ms and +300ms
-# Shape of X is (N x CT) = (12 x 4968) and T = 46
+# Shape of X is (N x CT) = (182 x 4968) and T = 46
 X, times, T = limit_psth(X, times)
 
 # Dimensionality reduction by PCA
@@ -23,7 +23,7 @@ Z = Z.reshape(M, -1, T)
 A = estimate_A(Z)
 
 
-def plt_2D_rotation_traj(A, Z, rot_plane=1, savefig=False):
+def construct_P(A, rot_plane=1):
     """
     For even M, every rotation in M-dimensional space can be decomposed into independent 2D
     rotations in M/2 orthogonal 2D planes (that only meet at the origin). In the case of our matrix A,
@@ -40,18 +40,17 @@ def plt_2D_rotation_traj(A, Z, rot_plane=1, savefig=False):
     fastest special 2D rotation induced by A. Construct the 2 × M matrix P with its two rows given
     by the normalized real and imaginary parts of the eigenvector corresponding to this eigenvalue.
     (Note that the real and imaginary part vectors need to be first normalized by you to have unit
-    length.) By applying P to Z obtain the special 2D projection of the M-dimensional trajectories,
-    in the special plane with the fastest rotation. We will call this special plane the plane of fastest
-    rotation, or FR plane for short, and will call the corresponding projection matrix P_FR.
+    length.) 
 
     Parameters:
     A -> 2D Square antisymmetric matrix of shape MxM (M is even).
          Obtained from function estimate_A(Z).
 
-    Z -> Data Matrix with 12 priciple components.
-
     rot_plane (int) -> indicates in which rotation plane
                        you want to visualise the trajectories. Takes value between 1 and M/2.
+
+    Returns:
+    P -> Matrix of shape 2 x M
     """
 
     M = A.shape[0]
@@ -67,8 +66,8 @@ def plt_2D_rotation_traj(A, Z, rot_plane=1, savefig=False):
     # Find eigenvalues and eigenvectors of A
     evals, evecs = np.linalg.eig(A)
 
-    eval = evals[2*(rot_plane-1)]  # Select eval corresponding to rot_plane
-    omega = np.abs(eval.imag)
+    evalue = evals[2*(rot_plane-1)]  # Select eval corresponding to rot_plane
+    omega = np.abs(evalue.imag)
     print(f'{omega=:.4f}')
 
     v = evecs[:, 2*(rot_plane-1)]
@@ -81,11 +80,33 @@ def plt_2D_rotation_traj(A, Z, rot_plane=1, savefig=False):
     P[0, :] = real_v_norm
     P[1, :] = imag_v_norm
 
+    return P, omega
+
+
+def project_movement_to_rotation_plane(P, Z):
+    """
+    By applying P to Z obtain the special 2D projection of the M-dimensional trajectories,
+    in the special plane with the fastest rotation. We will call this special plane the plane of fastest
+    rotation, or FR plane for short, and will call the corresponding projection matrix P_FR.
+    """
     # Plot only from -150ms to +200ms
     Z = Z[:, :, :-10]
 
     # Compute P_rot
     P_rot = np.tensordot(P, Z, axes=1)  # shape is 2 x C x T
+
+    return P_rot
+
+
+def plt_2D_rotation_traj(P_rot, omega, rot_plane=1, savefig=False):
+    """
+    Plot the projected trajectories.
+
+    rot_plane (int) -> indicates in which rotation plane
+                       you want to visualise the trajectories. Takes value between 1 and M/2.
+
+                       NOTE: must be the same value passed as in "construct_P" function.
+    """
 
     if rot_plane == 1:
         plt_title = "Trajectories in fastest rotation plane $P_{FR}$ with "
@@ -101,6 +122,10 @@ def plt_2D_rotation_traj(A, Z, rot_plane=1, savefig=False):
     plot_pc1_pc2_plane(P_rot, plt_title, savefig=savefig, T=36, Q=5)
 
 
-# To answer Qc
-# To answer Q5d just set rot_plane=2 or 3
-plt_2D_rotation_traj(A, Z, rot_plane=3, savefig=False)
+# To answer Q5d just set rot_plane= 2 or 3
+rot_plane = 1
+
+P, omega = construct_P(A, rot_plane=rot_plane)
+P_rot = project_movement_to_rotation_plane(P, Z)
+
+# plt_2D_rotation_traj(P_rot, omega, rot_plane=rot_plane, savefig=False)

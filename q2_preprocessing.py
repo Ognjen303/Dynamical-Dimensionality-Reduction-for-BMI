@@ -87,7 +87,7 @@ def mean_centering(X):
 # PSTH array, and use T to denote the number of time bins, now equal to 46 in this interval)
 
 
-def limit_psth(X, times):
+def limit_psth(X, times, lower=-150, upper=300):
     """Limits the psth to interval
     from -150ms to +300ms relative to movement onset.
 
@@ -105,7 +105,7 @@ def limit_psth(X, times):
 
     # Create a boolean mask to select values within the specified range
     # mask shape is (130, 1)
-    mask = (times >= -150) & (times <= 300)
+    mask = (times >= lower) & (times <= upper)
     mask = mask[:, 0]  # mask shape is now (130,)
 
     times = times[mask]
@@ -122,6 +122,7 @@ def limit_psth(X, times):
 X, times, T = limit_psth(X, times)
 
 # PCA
+
 
 def pca_proj_matrix(X, M=12):
     """
@@ -162,6 +163,7 @@ def pca_dim_reduction(X, M=12):
     del V_M
 
     return Z
+
 
 V_M = pca_proj_matrix(X)
 Z = pca_dim_reduction(X)

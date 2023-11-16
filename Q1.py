@@ -29,7 +29,7 @@ ax1.set_ylabel('Neurons')
 
 # Set the x-axis and y-axis tick labels using the times list
 ax1.set_xticks(np.arange(0, len(times), 10))
-ax1.set_xticklabels(times[::10], rotation=45)
+ax1.set_xticklabels(np.squeeze(times[::10]), rotation=45)
 
 neuron_labels1 = [str(i) if (i % 10 == 0 and i != 0) else '' for i in range(n)]
 ax1.set_yticks(range(n))
@@ -71,7 +71,7 @@ ax2.set_xticklabels(np.squeeze(times[::20]))
 
 ax2.legend()
 
-# save_fig(fig2, f'Q1_neuron_#{i+1}_in_cond_#{c+1}')
+# save_fig(fig2, f'Q1_two_neurons_in_two_cond')
 
 
 # Task: Plot the population average firing rate as a function of time,

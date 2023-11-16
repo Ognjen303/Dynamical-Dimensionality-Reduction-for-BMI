@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from modules import load_data, save_fig
 
+# Load data
 X, times = load_data()
 
 # Generate a timestamp to make a unique filename
@@ -49,17 +50,26 @@ fig2, ax2 = plt.subplots(figsize=(8, 6))
 
 # Plot the first neuron activity
 i = 0
-ax2.plot(times, X[i, c, :])
+ax2.plot(times, X[0, 0, :], label='Neuron #1, condition #1',
+         color='royalblue')
+ax2.plot(times, X[13, 0, :],
+         label='Neuron #14, condition #1', color='red')
+ax2.plot(times, X[0, 1, :], label='Neuron #1, condition #2',
+         color='lightseagreen')
+ax2.plot(times, X[13, 1, :],
+         label='Neuron #14, condition #2', color='coral')
 
 # Set the x and y axis labels and title
 ax2.set_xlabel('Time (ms)')
 ax2.set_ylabel('Firing rate (in Hz or spikes per second)')
-ax2.set_title(f'Plot of neuron number #{i+1} activity in condition #{c+1}')
+ax2.set_title(f'Two different neurons in two conditions')
 
 # Set the x axis labels
 ax2.set_xlim(times[0] - 20, times[-1] + 20)
-ax2.set_xticks(times[::20])
-ax2.set_xticklabels(times[::20])
+ax2.set_xticks(np.squeeze(times[::20]))
+ax2.set_xticklabels(np.squeeze(times[::20]))
+
+ax2.legend()
 
 # save_fig(fig2, f'Q1_neuron_#{i+1}_in_cond_#{c+1}')
 
@@ -75,8 +85,8 @@ ax3.plot(times, X.mean(axis=(0, 1)))
 
 # Set the x-axis tick labels
 ax3.set_xlim(times[0] - 20, times[-1] + 20)
-ax3.set_xticks(times[::20])
-ax3.set_xticklabels(times[::20])
+ax3.set_xticks(np.squeeze(times[::20]))
+ax3.set_xticklabels(np.squeeze(times[::20]))
 
 # Label the x-axis and y-axis
 ax3.set_xlabel('Time (ms)')

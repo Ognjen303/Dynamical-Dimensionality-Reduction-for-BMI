@@ -1,5 +1,6 @@
 """Control Analysis"""
 import numpy as np
+import matplotlib.pyplot as plt
 from modules import load_data
 from q2_preprocessing import limit_psth, pca_proj_matrix, pca_dim_reduction
 from q4e_estimate_matrix_A import estimate_A
@@ -26,9 +27,9 @@ for n in range(N):
     X[n, c, t0:] = 2 * np.expand_dims(X[n, c, t0], axis=1) - X[n, c, t0:]
 
 # Create figure and axis
-# plt.plot(times, X[0, 0, :])
+plt.plot(times, X[0, 0, :])
 
-# plt.show()
+plt.show()
 
 
 # --------- Rerun the computational steps from q2 to q5c

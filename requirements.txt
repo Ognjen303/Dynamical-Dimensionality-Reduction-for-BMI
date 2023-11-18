@@ -1,2 +1,0 @@
-matplotlib~=3.8.1           # Plotting library
-numpy~=1.26.1               # Scientific computing library

@@ -66,6 +66,10 @@ def construct_P(A, rot_plane=1):
     # Find eigenvalues and eigenvectors of A
     evals, evecs = np.linalg.eig(A)
 
+    np.set_printoptions(formatter={'float': lambda x: "{0:0.2e}".format(x)})
+    print(f'{evals.imag=}')
+    print(f'{evecs=}')
+
     evalue = evals[2*(rot_plane-1)]  # Select eval corresponding to rot_plane
     omega = np.abs(evalue.imag)
     print(f'{omega=:.4f}')
@@ -123,7 +127,7 @@ def plt_2D_rotation_traj(P_rot, omega, rot_plane=1, savefig=False):
 
 
 # To answer Q5d just set rot_plane= 2 or 3
-rot_plane = 1
+rot_plane = 3
 
 P, omega = construct_P(A, rot_plane=rot_plane)
 P_rot = project_movement_to_rotation_plane(P, Z)

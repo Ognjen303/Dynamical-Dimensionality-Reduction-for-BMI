@@ -62,7 +62,7 @@ Z = Z.reshape(M, -1, T)
 # Estimate the antisymmetric matrix A of shape KxK
 A_my_est = estimate_A(Z_test)
 
-plot_A_matrix(A_my_est, test=False)
+# plot_A_matrix(A_my_est, test=False)
 
 print(f'Are the two matricies identical? Ans: \
       {np.allclose(A_my_est, A_test, atol=1e-8, rtol=1e-3)}')

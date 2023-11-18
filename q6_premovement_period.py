@@ -70,6 +70,7 @@ X, times, T = limit_psth(X, times, lower=-800, upper=-150)
 # Directly project the N dimensional trajectories during pre-movement period
 # onto the FR plane
 P_rot_premov = proj_matrix @ X
+print(f'{P_rot_premov.shape=}')
 P_rot_premov = P_rot_premov.reshape(P_rot_premov.shape[0], -1, T)
 
 
@@ -130,12 +131,16 @@ def plt_premov_and_mov_rot_trajectories(P_rot, P_rot_premov, omega, savefig=Fals
     ax.legend()
 
     # Add axis labels
-    ax.set_xlabel('$1^{st}$ row of $P_{FR}$ matrix')
-    ax.set_ylabel('$2^{nd}$ row of $P_{FR}$ matrix')
+    ax.set_xlabel('$1^{st}$ row of $P_{FR}$ matrix', fontsize='x-large')
+    ax.set_ylabel('$2^{nd}$ row of $P_{FR}$ matrix', fontsize='x-large')
+
+    # Change the tick labels size
+    ax.tick_params(axis='x', labelsize=14)
+    ax.tick_params(axis='y', labelsize=14)
 
     # Add title
     ax.set_title(
-        f'Movement and Pre-movement trajectories on the same FR plane with $\omega$={omega:.4f}')
+        f'Movement and Pre-movement trajectories on the same FR plane with $\omega$={omega:.4f}', fontsize='x-large')
 
     # Save the figure
     if savefig:
@@ -144,4 +149,4 @@ def plt_premov_and_mov_rot_trajectories(P_rot, P_rot_premov, omega, savefig=Fals
     plt.show()
 
 
-plt_premov_and_mov_rot_trajectories(P_rot, P_rot_premov, omega, savefig=False)
+plt_premov_and_mov_rot_trajectories(P_rot, P_rot_premov, omega, savefig=True)

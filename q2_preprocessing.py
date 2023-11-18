@@ -39,16 +39,23 @@ def plot_histogram(X, n_bins=15):
     # Plot histogram
     ax2.hist(max_X, bins=n_bins)
 
+    # Change the tick labels size
+    ax2.tick_params(axis='x', labelsize=14)
+    ax2.tick_params(axis='y', labelsize=14)
+
     # Set x-axis and y-axis labels and title
-    ax2.set_xlabel('Maximum firing rate (Hz)')
-    ax2.set_ylabel('Neuron count')
+    ax2.set_xlabel('Maximum firing rate (Hz)', fontsize='x-large')
+    ax2.set_ylabel('Neuron count', fontsize='x-large')
     ax2.set_title(
-        'Histogram of max firing rate of neurons across conditions & time. 15 bins.')
+        'Histogram of pre-processed max firing rates of neurons across conditions & time. 15 bins.', fontsize='medium')
 
-    # save_fig(fig2, filename='Q2_Histogram_of_max_FR_of_each_neuron')
+    # save_fig(fig2, filename='Q2_preprocesed_Hist')
 
-    plt.show()
+    # plt.show()
     plt.clf()
+
+
+plot_histogram(X)
 
 
 def normalise(X):
@@ -119,6 +126,15 @@ def limit_psth(X, times, lower=-150, upper=300):
     return X, times, T
 
 
+# Just for histogram plotting purposes in Q2 after preprocessing
+
+# X, times, T = limit_psth(X, times, lower=-800, upper=500)
+
+# print(f'{X.shape=}')
+# X = X.reshape(X.shape[0], -1, T)
+# plot_histogram(X)
+
+
 X, times, T = limit_psth(X, times)
 
 # PCA
@@ -167,6 +183,44 @@ def pca_dim_reduction(X, M=12):
 
 V_M = pca_proj_matrix(X)
 Z = pca_dim_reduction(X)
+
+# Reshape Z back into a tensor of shape (M x C x T)
+Z = Z.reshape(12, -1, T)
+
+dZ = Z[:, :, 1:] - Z[:, :, :-1]
+
+# shape is (M x C(T-1))
+dZ = dZ.reshape(12, -1)
+
+# shape is (M x C x (T-1))
+Z = Z[:, :, :-1]
+
+# shape is (M x C(T-1))
+Z = Z.reshape(12, -1)
+
+# unconstrained MLE estimate of A
+
+A_MLE_un = dZ @ Z.T @ np.linalg.inv(Z @ Z.T)
+
+
+fig, ax = plt.subplots(figsize=(10, 8))
+pos = ax.imshow(A_MLE_un, cmap='coolwarm', interpolation='none')
+fig.colorbar(pos, ax=ax)
+
+ax.set_title('Values of unconstrained ML estimate of A', fontsize='large')
+# Change the tick labels size
+ax.tick_params(axis='x', labelsize=14)
+ax.tick_params(axis='y', labelsize=14)
+
+save_fig(fig, 'A_MLE_uncon')
+
+print(f'{A_MLE_un=}')
+print(f'{A_MLE_un.shape=}')
+
+
+
+plt.show()
+
 
 print(V_M.shape)
 print(Z.shape)

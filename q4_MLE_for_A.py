@@ -266,15 +266,15 @@ def plot_A_matrix(A, test=False):
     # Plot entries of anitysymmetric matrix A
 
     fig, ax = plt.subplots(figsize=(10, 8))
-    pos = ax.imshow(A, cmap='Blues', interpolation='none')
+    pos = ax.imshow(A, cmap='coolwarm', interpolation='none')
     fig.colorbar(pos, ax=ax)
 
     if test:  # If we passed the actual solution matrix A
-        pass
-        #     ax.set_title('Antisymmetric matrix A_test')
-        #     save_fig(fig, 'Q4e_A_test_colour_plot')
+        # pass
+        ax.set_title('Groundtruth $A_{test}$')
+        # save_fig(fig, 'Q4e_groundtruth_A_test')
     else:
         ax.set_title(f'Maximum Likelihood Estimate of antisymmetric matrix A')
-    #    save_fig(fig, 'Q4e_A_colour_plot')
+        # save_fig(fig, 'Q4e_MLE_A_colour_plot')
 
     plt.show()

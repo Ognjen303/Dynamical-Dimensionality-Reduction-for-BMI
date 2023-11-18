@@ -67,20 +67,24 @@ def plot_pc1_pc2_plane(Z, plt_title=None, savefig=True, T=46, **kwargs):
     xs, ys = pc1[:, -1], pc2[:, -1]
     cond_color.plot_end(xs, ys, colors, markersize=30)
 
+    # Change the tick labels size
+    ax.tick_params(axis='x', labelsize=14)
+    ax.tick_params(axis='y', labelsize=14)
+
     # Add legend
-    ax.legend()
+    ax.legend(prop={'size': 14})
 
     if Q == 3 or Q is None:  # We are solving Q3
         # Add axis labels and title for Q3
-        ax.set_xlabel('1st Principle Component')
-        ax.set_ylabel('2nd Principle Component')
-        ax.set_title(plt_title)
+        ax.set_xlabel('1st Principle Component', fontsize='x-large')
+        ax.set_ylabel('2nd Principle Component', fontsize='x-large')
+        ax.set_title(plt_title, fontsize='large')
 
     elif Q == 5:
         # Add axis labels and title for Q5
-        ax.set_xlabel('$1^{st}$ row of P matrix')
-        ax.set_ylabel('$2^{nd}$ row of P matrix')
-        ax.set_title(plt_title)
+        ax.set_xlabel('$1^{st}$ row of P matrix', fontsize='x-large')
+        ax.set_ylabel('$2^{nd}$ row of P matrix', fontsize='x-large')
+        ax.set_title(plt_title, fontsize='large')
 
     # Save the figure
     if savefig:
